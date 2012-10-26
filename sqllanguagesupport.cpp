@@ -38,7 +38,7 @@
 #include "resulttablewidget.h"
 
 K_PLUGIN_FACTORY(KDevSqlSupportFactory, registerPlugin<Sql::LanguageSupport>();)
-K_EXPORT_PLUGIN(KDevSqlSupportFactory(KAboutData("kdevsqlsupport","kdevsql", ki18n("Sql Support"), "0.1", ki18n("Support for Sql Language"), KAboutData::License_GPL)
+K_EXPORT_PLUGIN(KDevSqlSupportFactory(KAboutData("kdevsqlsupport","kdevsql", ki18n("SQL Support"), "0.1", ki18n("Support for SQL Language"), KAboutData::License_GPL)
     .addAuthor(ki18n("Niko Sams"), ki18n("Author"), "niko.sams@gmail.com", "http://nikosams.blogspot.com")
 ))
 
@@ -98,7 +98,7 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
 
     KActionCollection* ac = actionCollection();
 
-    KAction* action = new KAction(KIcon("system-run"), i18n("Run Sql"), this);
+    KAction* action = new KAction(KIcon("system-run"), i18n("Run SQL"), this);
     action->setShortcut(Qt::CTRL + Qt::Key_Return);
     connect(action, SIGNAL(triggered(bool)), SLOT(runSql()));
     ac->addAction("run_sql", action);
@@ -116,7 +116,7 @@ LanguageSupport *LanguageSupport::self()
 
 void LanguageSupport::runSql()
 {
-    QWidget* w = core()->uiController()->findToolView(i18n("Sql Query"), m_resultTableFactory, KDevelop::IUiController::CreateAndRaise);
+    QWidget* w = core()->uiController()->findToolView(i18n("SQL Query"), m_resultTableFactory, KDevelop::IUiController::CreateAndRaise);
     Q_ASSERT(w);
     ResultTableWidget* resTable = dynamic_cast<ResultTableWidget*>(w);
     Q_ASSERT(resTable);
