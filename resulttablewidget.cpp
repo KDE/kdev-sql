@@ -144,6 +144,8 @@ ResultTableWidget::ResultTableWidget(QWidget* parent)
     connect(m_ui->connection, SIGNAL(currentIndexChanged(int)), SLOT(currentConnectionChanged(int)));
     connect(m_connectionsModel, SIGNAL(modelReset()), SLOT(connectionChanged()));
     connect(m_connectionsModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), SLOT(connectionChanged()));
+
+    setWindowIcon(KIcon("server-database"));
 }
 
 ResultTableWidget::~ResultTableWidget()
