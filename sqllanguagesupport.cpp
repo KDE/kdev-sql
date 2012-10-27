@@ -99,7 +99,7 @@ LanguageSupport::LanguageSupport(QObject* parent, const QVariantList& /*args*/)
     KActionCollection* ac = actionCollection();
 
     KAction* action = new KAction(KIcon("system-run"), i18n("Run SQL"), this);
-    action->setShortcut(Qt::CTRL + Qt::Key_Return);
+    action->setShortcut(Qt::CTRL + Qt::Key_E);
     connect(action, SIGNAL(triggered(bool)), SLOT(runSql()));
     ac->addAction("run_sql", action);
 }
