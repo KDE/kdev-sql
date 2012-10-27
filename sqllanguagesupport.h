@@ -40,7 +40,7 @@ public:
     /*Name Of the Language*/
     QString name() const;
 
-    virtual KDevelop::ParseJob* createParseJob(const KDevelop::IndexedString&) { return 0; }
+    virtual KDevelop::ParseJob* createParseJob(const KUrl&) { return 0; }
 
     static LanguageSupport* self();
 
