@@ -21,6 +21,7 @@ set(kdevsqllanguagesupport_SRCS
     sqllanguagesupport.cpp
     resulttablewidget.cpp
     connections/connectionsmodel.cpp
+    queryworker.cpp
 )
 kde4_add_ui_files( kdevsqllanguagesupport_SRCS results.ui )
 

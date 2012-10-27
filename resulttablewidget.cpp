@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2010 Niko Sams <niko.sams@gmail.com>
+   Copyright (C) 2010,2012 Niko Sams <niko.sams@gmail.com>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -35,6 +35,7 @@
 #include <interfaces/iproject.h>
 
 #include "connections/connectionsmodel.h"
+#include "queryworker.h"
 #include "ui_results.h"
 
 
@@ -132,7 +133,7 @@ private:
 };
 
 ResultTableWidget::ResultTableWidget(QWidget* parent)
-    : QWidget(parent)
+    : QWidget(parent), m_queryWorker(0)
 {
     m_ui = new Ui::Results;
     m_ui->setupUi(this);
@@ -152,31 +153,31 @@ ResultTableWidget::~ResultTableWidget()
 
 void ResultTableWidget::currentConnectionChanged(int index)
 {
-    if (QSqlDatabase::contains("kdevsql")) {
-        if (m_db.isOpen()) m_db.close();
-        m_db = QSqlDatabase();
-        QSqlDatabase::removeDatabase("kdevsql");
+    if (!m_queryWorker) {
+        m_queryWorker = new QueryWorker();
+        QThread *queryThread = new QThread(this);
+        connect(m_queryWorker, SIGNAL(results(QSqlQuery, int)), SLOT(results(QSqlQuery, int)));
+        connect(m_queryWorker, SIGNAL(error(QString)), SLOT(error(QString)));
+        m_queryWorker->moveToThread(queryThread);
+        queryThread->start();
     }
+
+    kDebug() << index;
     if (index != -1) {
+        m_ui->messageLabel->setText(QString(""));
+
         ConnectionsModel::Connection c = m_connectionsModel->connection(index);
-        m_db = QSqlDatabase::addDatabase(c.driver, "kdevsql");
-        m_db.setHostName(c.hostName);
-        m_db.setUserName(c.userName);
-        m_db.setPassword(c.password);
-        m_db.setDatabaseName(c.databaseName);
-        if (!m_db.open()) {
-            m_ui->errorLabel->setText(Qt::escape(m_db.lastError().text()));
-        } else {
-            m_ui->errorLabel->setText("");
-        }
+        qRegisterMetaType<ConnectionsModel::Connection>("ConnectionsModel::Connection");
+        QMetaObject::invokeMethod(m_queryWorker, "changeDatabaseConnection", Qt::QueuedConnection, Q_ARG(ConnectionsModel::Connection, c));
     } else {
         if (!m_connectionsModel->rowCount()) {
-            m_ui->errorLabel->setText(i18n("No Database Connection avaliable. Open Project Configuration for to create one."));
+            m_ui->messageLabel->setText(i18n("No Database Connection avaliable. Open Project Configuration for to create one."));
         } else {
-            m_ui->errorLabel->setText(i18n("No Database Connection selected."));
+            m_ui->messageLabel->setText(i18n("No Database Connection selected."));
         }
     }
-    m_ui->stackedWidget->setCurrentWidget(m_ui->errorPage);
+
+    m_ui->stackedWidget->setCurrentWidget(m_ui->messagePage);
 }
 
 void ResultTableWidget::connectionChanged()
@@ -187,29 +188,28 @@ void ResultTableWidget::connectionChanged()
 
 void ResultTableWidget::runSql(QString sql)
 {
-    if (!m_db.isOpen()) {
-        currentConnectionChanged(m_ui->connection->currentIndex());
-    }
-    if (m_db.isOpen()) {
-        QSqlQuery query(sql, m_db);
-        int elapsed;
-        {
-          QTime t;
-          t.start();
-          query.exec();
-          elapsed = t.elapsed();
-        }
-        m_model->setQuery(query);
-        if (m_model->lastError().isValid()) {
-            m_ui->errorLabel->setText(Qt::escape(m_model->lastError().text()));
-            m_ui->stackedWidget->setCurrentWidget(m_ui->errorPage);
-        } else {
-            m_ui->durationLabel->setText(i18n("Query finished in %1 ms", QString::number(elapsed)));
-            m_ui->stackedWidget->setCurrentWidget(m_ui->resultsPage);
-        }
-    }
+    if (!m_queryWorker) currentConnectionChanged(m_ui->connection->currentIndex());
+
+    m_ui->messageLabel->setText(i18n("Executing Query..."));
+    m_ui->stackedWidget->setCurrentWidget(m_ui->messagePage);
+
+    qRegisterMetaType<QSqlDatabase>("QSqlDatabase");
+    QMetaObject::invokeMethod(m_queryWorker, "execute", Qt::QueuedConnection, Q_ARG(QString, sql));
 }
 
+void ResultTableWidget::error(const QString& errorText)
+{
+    m_ui->messageLabel->setText(Qt::escape(errorText));
+    m_ui->stackedWidget->setCurrentWidget(m_ui->messagePage);
+}
+
+void ResultTableWidget::results(QSqlQuery query, int elapsedTime)
+{
+    m_model->setQuery(query);
+
+    m_ui->durationLabel->setText(i18n("Query finished in %1 ms", QString::number(elapsedTime)));
+    m_ui->stackedWidget->setCurrentWidget(m_ui->resultsPage);
+}
 
 }
 

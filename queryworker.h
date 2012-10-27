@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2010 Niko Sams <niko.sams@gmail.com>
+   Copyright (C) 2012 Niko Sams <niko.sams@gmail.com>
 
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -16,46 +16,36 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef SQL_RESULTTABLEWIDGET_H
-#define SQL_RESULTTABLEWIDGET_H
+#ifndef QUERYWORKER_H
+#define QUERYWORKER_H
 
-#include <QWidget>
-#include <QSqlDatabase>
-
-namespace Ui {
-    class Results;
-}
-
-class QTableView;
-class QSqlQueryModel;
+#include <QThread>
+#include <QSqlQuery>
+#include "connections/connectionsmodel.h"
 
 namespace Sql {
 
-class ConnectionsAllProjectsModel;
-class QueryWorker;
-
-class ResultTableWidget : public QWidget
+class QueryWorker : public QThread
 {
     Q_OBJECT
+
 public:
-    ResultTableWidget(QWidget* parent = 0);
-    ~ResultTableWidget();
+    QueryWorker(QObject *parent = 0);
 
-    void runSql(QString sql);
+protected:
+    virtual void run();
 
-private slots:
-    void currentConnectionChanged(int index);
-    void connectionChanged();
+public Q_SLOTS:
+    void execute( const QString& query );
+    void changeDatabaseConnection(ConnectionsModel::Connection c);
+
+Q_SIGNALS:
     void results(QSqlQuery query, int elapsedTime);
-    void error(const QString &errorText);
-
+    void error(QString errorMessage);
 private:
-    Ui::Results *m_ui;
-    QSqlQueryModel *m_model;
-    ConnectionsAllProjectsModel* m_connectionsModel;
-    QueryWorker* m_queryWorker;
+    QSqlDatabase m_db;
 };
 
 }
 
-#endif
+#endif // QUERYWORKER_H
