@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Type=Service
 Icon=server-database
-Name=KDevSqlSupport
+Name=SQL Support
 GenericName=SQL Support
 ServiceTypes=KDevelop/Plugin
 X-KDE-Library=kdevsqllanguagesupport
