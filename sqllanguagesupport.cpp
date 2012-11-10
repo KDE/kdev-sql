@@ -120,7 +120,13 @@ void LanguageSupport::runSql()
     Q_ASSERT(w);
     ResultTableWidget* resTable = dynamic_cast<ResultTableWidget*>(w);
     Q_ASSERT(resTable);
-    QString text = core()->documentController()->activeDocument()->textDocument()->text();
+    KTextEditor::Range selection = core()->documentController()->activeDocument()->textSelection();
+    QString text;
+    if (selection.isEmpty()) {
+        text = core()->documentController()->activeDocument()->textDocument()->text();
+    } else {
+        text = core()->documentController()->activeDocument()->textDocument()->text(selection);
+    }
     resTable->runSql(text);
 }
 
