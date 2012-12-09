@@ -173,7 +173,7 @@ void ResultTableWidget::currentConnectionChanged(int index)
         QMetaObject::invokeMethod(m_queryWorker, "changeDatabaseConnection", Qt::QueuedConnection, Q_ARG(ConnectionsModel::Connection, c));
     } else {
         if (!m_connectionsModel->rowCount()) {
-            m_ui->messageLabel->setText(i18n("No Database Connection avaliable. Open Project Configuration for to create one."));
+            m_ui->messageLabel->setText(i18n("No Database Connection available. Open Project Configuration for to create one."));
         } else {
             m_ui->messageLabel->setText(i18n("No Database Connection selected."));
         }
