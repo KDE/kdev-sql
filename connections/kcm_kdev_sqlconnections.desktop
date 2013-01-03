@@ -12,6 +12,7 @@ X-KDE-CfgDlgHierarchy=GENERAL
 
 Name=DB Connections
 Name[cs]=Spojení DB
+Name[de]=DB-Verbindungen
 Name[es]=Conexiones de bases de datos
 Name[et]=Andmebaasiühendused
 Name[ga]=Ceangail BS
@@ -27,6 +28,7 @@ Name[uk]=З’єднання з базою даних
 Name[x-test]=xxDB Connectionsxx
 Comment=Configure Database Connections
 Comment[cs]=Nastavit spojení databáze
+Comment[de]=Datenbank-Verbindungen einrichten
 Comment[es]=Configurar conexiones de bases de datos
 Comment[et]=Andmebaasiühenduste seadistamine
 Comment[ga]=Cumraigh Ceangail Bhunachair Sonraí
