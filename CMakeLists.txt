@@ -46,5 +46,7 @@ target_link_libraries(kdevsqllanguagesupport
 
 install(TARGETS kdevsqllanguagesupport DESTINATION ${PLUGIN_INSTALL_DIR})
 
-install(FILES kdevsqlsupport.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+configure_file(kdevsqlsupport.desktop.cmake ${CMAKE_CURRENT_BINARY_DIR}/kdevsqlsupport.desktop)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kdevsqlsupport.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+
 install( FILES kdevsqlui.rc DESTINATION ${DATA_INSTALL_DIR}/kdevsqlsupport )
