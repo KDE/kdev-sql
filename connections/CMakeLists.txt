@@ -9,7 +9,7 @@ set(kcm_kdev_sqlconnections_SRCS
 kde4_add_ui_files( kcm_kdev_sqlconnections_SRCS connections.ui )
 kde4_add_plugin(kcm_kdev_sqlconnections ${kcm_kdev_sqlconnections_SRCS})
 
-target_link_libraries(kcm_kdev_sqlconnections
+target_link_libraries(kcm_kdev_sqlconnections LINK_PRIVATE
     ${KDEVPLATFORM_INTERFACES_LIBRARIES}
     ${QT_QTSQL_LIBRARY}
 )
