@@ -34,6 +34,7 @@ Name[tr]=DB Bağlantıları
 Name[uk]=З’єднання з базою даних
 Name[x-test]=xxDB Connectionsxx
 Comment=Configure Database Connections
+Comment[ast]=Configura les conexones a la base de datos
 Comment[bs]=Konfiguriši veze na baze podataka
 Comment[ca]=Configura les connexions a la base de dades
 Comment[ca@valencia]=Configura les connexions a la base de dades
